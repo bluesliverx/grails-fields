@@ -144,6 +144,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				required: attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
 				invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
 				prefix: resolvePrefix(attrs.remove('prefix')),
+				title: resolveTitleText(propertyAccessor, attrs.remove("title")),
+				placeholder: resolvePlaceholderText(propertyAccessor, attrs.remove("placeholder")),
 		]
 	}
 
@@ -222,6 +224,28 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		labelText
 	}
+
+	private String resolveTitleText(BeanPropertyAccessor propertyAccessor, String title) {
+		def titleText
+		if (title) {
+			titleText = message(code: title, default: title)
+		}
+		if (!titleText && propertyAccessor.titleKeys) {
+			titleText = resolveMessage(propertyAccessor.titleKeys, null)
+		}
+		titleText
+	}
+
+	private String resolvePlaceholderText(BeanPropertyAccessor propertyAccessor, String placeholder) {
+		def placeholderText
+		if (placeholder) {
+			placeholderText = message(code: placeholder, default: placeholder)
+		}
+		if (!placeholderText && propertyAccessor.placeholderKeys) {
+			placeholderText = resolveMessage(propertyAccessor.placeholderKeys, null)
+		}
+		placeholderText
+	}
 	
 	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
@@ -253,6 +277,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
 		if (model.invalid) attrs.invalid = ""
 		if (!model.constraints.editable) attrs.readonly = ""
+		if (model.title) attrs.title = model.title
+		if (model.placeholder) attrs.placeholder = model.placeholder
 
 		if (model.type in [String, null]) {
 			return renderStringInput(model, attrs)

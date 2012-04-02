@@ -88,6 +88,16 @@ interface BeanPropertyAccessor {
 	List<String> getLabelKeys()
 
 	/**
+	 * @return the i18n keys used to resolve a title for the property at the end of the path in order of preference.
+	 */
+	List<String> getTitleKeys()
+
+	/**
+	 * @return the i18n keys used to resolve a placeholder for the property at the end of the path in order of preference.
+	 */
+	List<String> getPlaceholderKeys()
+
+	/**
 	 * @return default label text for the property at the end of the path.
 	 */
 	String getDefaultLabel()

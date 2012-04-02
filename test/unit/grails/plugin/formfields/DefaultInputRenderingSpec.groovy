@@ -478,6 +478,22 @@ class DefaultInputRenderingSpec extends Specification {
 		int          | 'range'       | /input type="range"/
 		Integer      | 'range'       | /input type="range"/
 	}
+	
+	@Issue('https://github.com/robfletcher/grails-fields/issues/43')
+	def '#type render(s) when title is #title and placeholder is #placeholder'() {
+		given:
+		def model = [type: String, property: "prop", constraints: [:], persistentProperty: basicProperty, title: title, placeholder: placeholder]
+
+		expect:
+		tagLib.renderDefaultInput(model) =~ outputPattern
+
+		where:
+		type    				| title		| placeholder		| outputPattern
+		'no'					| null		| null				| /input type="text" name="prop" value="" readonly="" id="prop" \//
+		'title'					| 'my'		| null				| /title="my"/
+		'placeholder'			| null		| 'my'				| /placeholder="my"/
+		'title and placeholder' | 'myt'		| 'myp'				| /title="myt" placeholder="myp"/
+	}
 
 }
 

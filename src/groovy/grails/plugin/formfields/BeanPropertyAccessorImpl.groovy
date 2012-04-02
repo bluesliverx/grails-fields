@@ -53,6 +53,20 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		].unique()
 	}
 
+	List<String> getTitleKeys() {
+		[
+			"${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.input.title".replaceAll(/\[(.+)\]/, ''),
+			"${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.input.title"
+		].unique()
+	}
+
+	List<String> getPlaceholderKeys() {
+		[
+			"${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.input.placeholder".replaceAll(/\[(.+)\]/, ''),
+			"${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.input.placeholder"
+		].unique()
+	}
+
 	String getDefaultLabel() {
 		GrailsNameUtils.getNaturalName(propertyName)
 	}

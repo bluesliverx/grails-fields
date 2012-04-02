@@ -246,6 +246,42 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		Author   | "books[0].title" | "Title"
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/67')
+	void "title keys for '#property' are '#titles'"() {
+		given:
+		def bean = beanType.list().first()
+		def propertyAccessor = factory.accessorFor(bean, property)
+
+		expect:
+		propertyAccessor.titleKeys == titles
+
+		where:
+		beanType | property         | titles
+		Person   | 'name'           | ['person.name.input.title']
+		Person   | 'dateOfBirth'    | ['person.dateOfBirth.input.title']
+		Person   | 'address'        | ['person.address.input.title']
+		Person   | 'address.city'   | ['person.address.city.input.title', 'address.city.input.title']
+		Author   | 'books[0].title' | ['author.books.title.input.title', 'book.title.input.title']
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/67')
+	void "placeholder keys for '#property' are '#placeholders'"() {
+		given:
+		def bean = beanType.list().first()
+		def propertyAccessor = factory.accessorFor(bean, property)
+
+		expect:
+		propertyAccessor.placeholderKeys == placeholders
+
+		where:
+		beanType | property         | placeholders
+		Person   | 'name'           | ['person.name.input.placeholder']
+		Person   | 'dateOfBirth'    | ['person.dateOfBirth.input.placeholder']
+		Person   | 'address'        | ['person.address.input.placeholder']
+		Person   | 'address.city'   | ['person.address.city.input.placeholder', 'address.city.input.placeholder']
+		Author   | 'books[0].title' | ['author.books.title.input.placeholder', 'book.title.input.placeholder']
+	}
+
 	void "resolves errors for a basic property"() {
 		given:
 		person.name = ""
