@@ -1,12 +1,13 @@
 package grails.plugin.formfields.taglib
 
 import grails.plugin.formfields.mock.Person
+import grails.plugin.formfields.mock.Stock
 import grails.plugin.formfields.*
 import grails.test.mixin.*
 import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
-@Mock(Person)
+@Mock([Person, Stock])
 @Unroll
 class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 
@@ -68,4 +69,18 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 		!output.contains('minor')
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/85')
+	void 'all tag does not include derived properties'() {
+		given:
+		def stockInstance = new Stock(name: "COM", price: 10.5d)
+		views["/_fields/default/_field.gsp"] = '${property}'
+		
+		when:
+		def output = applyTemplate('<f:all bean="stockInstance" />', [stockInstance:stockInstance])
+
+		then:
+		output.contains('name')
+		output.contains('price')
+		!output.contains('tickerDisplay')
+	}
 }
